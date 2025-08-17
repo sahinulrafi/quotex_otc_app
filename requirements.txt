@@ -1,0 +1,4 @@
+flask
+numpy
+git+https://github.com/cleitonleonel/pyquotex.git
+asyncio
