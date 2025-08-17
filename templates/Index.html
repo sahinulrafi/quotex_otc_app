@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quotex OTC Signal Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #1e1e2f;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .login-form {
+            background-color: #2a2a3b;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3b3b4f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .login-form button:hover {
+            background-color: #4c4c6f;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        .category h2 {
+            background-color: #2a2a3b;
+            padding: 10px;
+            margin: 0;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background-color: #3b3b4f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #4c4c6f;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2a2a3b;
+            border-radius: 5px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    </style>
+    <script>
+        function getSignal(asset) {
+            fetch('/get_signal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'asset=' + encodeURIComponent(asset)
+            })
+            .then(response => response.text())
+            .then(data => document.getElementById('result').innerHTML = data);
+        }
+    </script>
+</head>
+<body>
+    <h1>Quotex OTC Signal Generator</h1>
+    <div class="login-form">
+        <form method="POST" action="/">
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+            <input type="email" name="email" placeholder="Enter Quotex Email" required>
+            <input type="password" name="password" placeholder="Enter Quotex Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    {% for category, pairs in assets.items() %}
+        <div class="category">
+            <h2>{{ category }}</h2>
+            {% for pair in pairs %}
+                <button onclick="getSignal('{{ pair }}')">{{ pair }} (OTC)</button>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <div id="result"></div>
+</body>
+</html>
